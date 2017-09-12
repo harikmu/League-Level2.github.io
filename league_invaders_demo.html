@@ -34,9 +34,11 @@ var gameObjects = [];
 var menuState = 0;
 var gameState = 1;
 var endState = 2;
-var currentState = endState;
+var currentState = menuState;
 
-var p = new Player((can.width / 2) - 15, can.height - 100, 3, 30, 30);
+var gameScore = 0;
+    
+var p = new Player(250, 700, 5, 50, 50);
 gameObjects.push(p);
 
 window.onload = function init() {
@@ -85,6 +87,7 @@ function objectCheck(){
       }
       if((o1.type == "bullet") && (o2.type == "enemy")){
         if(checkCollision(o1, o2)){
+            gameScore++;
             o1.hit();
             o2.hit();
         }
@@ -105,7 +108,7 @@ function checkCollision(o1, o2){
 function generateEnemy()
 {
   if(Math.floor(Math.random() * 51) == 50){
-    var e = new Enemy(Math.floor(Math.random() * can.width), -50, 2, 40, 30);
+    var e = new Enemy(Math.floor(Math.random() * can.width), -50, 5, 50, 50);
     gameObjects.push(e);
   }
 }
@@ -171,7 +174,7 @@ function drawEndState(d){
   d.font = "48px Arial";
   d.fillText("Game Over", 125, 200);
   d.font = "24px Arial";
-  d.fillText("You killed 0 enemies", 140, 350);
+  d.fillText("You killed " + gameScore + " enemies", 140, 350);
   d.font = "24px Arial";
   d.fillText("Press ENTER to restart", 120, 500);
 }
@@ -208,6 +211,10 @@ function keyDown(e) {
     currentState++;
     
     if(currentState > endState){
+      gameObjects = [];
+      p = new Player(250, 700, 5, 50, 50);
+      gameScore = 0;
+      gameObjects.push(p);
       currentState = menuState;
     }
   }
@@ -258,7 +265,7 @@ function Player(x, y, speed, w, h) {
     }
     if(space){
       if(!gunlock){
-        var b =  new Bullet(this.x + 15, this.y, 10, 4, 8);
+        var b =  new Bullet(this.x + 25, this.y, 10, 6, 15);
         gameObjects.push(b);
         gunlock = true;
       }
