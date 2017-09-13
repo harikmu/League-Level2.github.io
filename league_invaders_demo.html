@@ -10,54 +10,55 @@
     </canvas>
   </div>
 </body>
+  
+<img id="alien" src="https://github.com/League-level2/League-Level2.github.io/blob/master/alien.png?raw=true" style="display: none;">
+<img id="ship" src="https://github.com/League-level2/League-Level2.github.io/blob/master/rocket.png?raw=true" style="display: none;">
+<img id="bullet" src="https://github.com/League-level2/League-Level2.github.io/blob/master/bullet.png?raw=true" style="display: none;">
+<img id="space" src="https://github.com/League-level2/League-Level2.github.io/blob/master/space.png?raw=true" style="display: none;">
 
+  
   <script>
   var can = document.getElementById("canvas");
 var x = 0;
 var y = 0;
-
 var leftKey = 37;
 var rightKey = 39;
 var upKey = 38;
 var downKey = 40;
 var spaceKey = 32;
 var enterKey = 13;
-
 var left = false;
 var right = false;
 var up = false;
 var down = false;
 var space = false;
-
 var gameObjects = [];
-
 var menuState = 0;
 var gameState = 1;
 var endState = 2;
 var currentState = menuState;
-
 var gameScore = 0;
+ 
+var alienImg = document.getElementById("alien");
+var shipImg = document.getElementById("ship");
+var bulletImg = document.getElementById("bullet");
+var spaceImg = document.getElementById("space");
     
 var p = new Player(250, 700, 5, 50, 50);
 gameObjects.push(p);
-
 window.onload = function init() {
   var d = can.getContext("2d");
-
   document.addEventListener('keydown', function(event) {
     keyDown(event);
   });
-
   document.addEventListener('keyup', function(event) {
     keyUp(event);
   });
-
   setInterval(function go() {
     interval();
     draw(d);
   }, 1000 / 60);
 }
-
 function interval() {
   console.log(currentState);
   if(currentState == menuState){
@@ -68,7 +69,6 @@ function interval() {
     updateEndState();
   }
 } 
-
 function objectCheck(){
   for(var i = 0; i < gameObjects.length; i++){
     for(var j = 0; j < gameObjects.length; j++){
@@ -95,7 +95,6 @@ function objectCheck(){
      }
    }
 }
-
 function checkCollision(o1, o2){
   if(o1.x < o2.x + o2.w &&
     o1.x + o1.w > o2.x &&
@@ -104,7 +103,6 @@ function checkCollision(o1, o2){
       return true;
   }
 }
-
 function generateEnemy()
 {
   if(Math.floor(Math.random() * 51) == 50){
@@ -112,7 +110,6 @@ function generateEnemy()
     gameObjects.push(e);
   }
 }
-
 function clearDeadObjects(){
   for(var i = 0; i < gameObjects.length; i++){
     if(gameObjects[i].dead){
@@ -120,11 +117,9 @@ function clearDeadObjects(){
     }
   }
 }
-
 function updateMenuState(){
   
 }
-
 function updateGameState(){
   generateEnemy();
   objectCheck();
@@ -136,11 +131,9 @@ function updateGameState(){
     gameObjects[i].update();
   }
 }
-
 function updateEndState(){
   
 }
-
 function drawMenuState(d){
   d.clearRect(0, 0, can.width, can.height);
   d.fillStyle = "#0000FF";
@@ -153,19 +146,15 @@ function drawMenuState(d){
   d.font = "24px Arial";
   d.fillText("Press SPACE for instructions", 85, 500);
 }
-
 function drawGameState(d){
   d.clearRect(0, 0, can.width, can.height);
-  d.fillStyle = "#DDEEFF";
-  d.fillRect(0, 0, can.width, can.height);
-
+  d.drawImage(spaceImg, 0, 0, 500, 800);
   p.render(d);
   
   for(var i = 0; i < gameObjects.length; i++){
     gameObjects[i].render(d);
   }
 }
-
 function drawEndState(d){
   d.clearRect(0, 0, can.width, can.height);
   d.fillStyle = "#FF0000";
@@ -178,7 +167,6 @@ function drawEndState(d){
   d.font = "24px Arial";
   d.fillText("Press ENTER to restart", 120, 500);
 }
-
 function draw(d) {
   if(currentState == menuState){
     drawMenuState(d);
@@ -190,7 +178,6 @@ function draw(d) {
   
   
 }
-
 function keyDown(e) {
   if (e.keyCode == leftKey) {
     left = true;
@@ -220,7 +207,6 @@ function keyDown(e) {
   }
   
 }
-
 function keyUp(e) {
   if (e.keyCode == leftKey) {
     left = false;
@@ -238,7 +224,6 @@ function keyUp(e) {
     space = false;
   }
 }
-
 function Player(x, y, speed, w, h) {
   this.x = x;
   this.y = y;
@@ -287,17 +272,16 @@ function Player(x, y, speed, w, h) {
       this.y = can.height - this.h;
     }
   };
-
   this.render = function(d) {
     d.fillStyle = "#00EEFF";
-    d.fillRect(this.x, this.y, this.w, this.h);
+    //d.fillRect(this.x, this.y, this.w, this.h);
+    d.drawImage(shipImg, this.x, this.y, this.w, this.h);
   };
   
   this.hit = function(){
     currentState = endState;
   }
 };
-
 function Bullet(x, y, speed, w, h) {
   this.x = x;
   this.y = y;
@@ -315,17 +299,16 @@ function Bullet(x, y, speed, w, h) {
       dead = true;
     }
   };
-
   this.render = function(d) {
     d.fillStyle = "#FF1616";
-    d.fillRect(this.x, this.y, this.w, this.h);
+    //d.fillRect(this.x, this.y, this.w, this.h);
+    d.drawImage(bulletImg, this.x, this.y, this.w, this.h);
   };
   
   this.hit = function(){
     this.dead = true;
   }
 };
-
 function Enemy(x, y, speed, w, h) {
   this.x = x;
   this.y = y;
@@ -339,10 +322,10 @@ function Enemy(x, y, speed, w, h) {
   this.update = function() {
    this.y += this.speed;
   };
-
   this.render = function(d) {
     d.fillStyle = "#AA2211";
-    d.fillRect(this.x, this.y, this.w, this.h);
+    //d.fillRect(this.x, this.y, this.w, this.h);
+    d.drawImage(alienImg, this.x, this.y, this.w, this.h);
   };
   
   this.hit = function(){
